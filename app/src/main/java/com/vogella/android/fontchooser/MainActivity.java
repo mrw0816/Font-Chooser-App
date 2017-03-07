@@ -20,6 +20,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
     int font = 0;
+    int fontSize = 0;
 
     SeekBar fontSeekBar;
     Spinner typeFaceSpinner;
@@ -71,16 +72,20 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onClick(View view) {
         String message = input.getText().toString();
         output.setText(message);
-        intent.putExtra("style", output.getTypeface().getStyle());
-        intent.putExtra("font", font);
-        intent.putExtra("font size", output.getTextSize());
-        intent.putExtra("color red", redNumber);
-        intent.putExtra("color blue", blueNumber);
-        intent.putExtra("color green", greenNumber);
+
     }
 
     public void sendFont(View view){
         if(getCallingActivity() != null){
+            intent.putExtra("style", output.getTypeface().getStyle());
+            intent.putExtra("font", font);
+            intent.putExtra("font size", fontSize);
+            intent.putExtra("color red", redNumber);
+            intent.putExtra("color blue", blueNumber);
+            intent.putExtra("color green", greenNumber);
+            intent.putExtra("text", output.getText().toString());
+
+            Toast.makeText(this, "" + output.getTextSize(), Toast.LENGTH_LONG).show();
             setResult(RESULT_OK, intent);
             finish();
         }
@@ -150,6 +155,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     @Override
                     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                         output.setTextSize(15 + progress);
+                        fontSize = 15 + progress;
                     }
 
                     @Override
