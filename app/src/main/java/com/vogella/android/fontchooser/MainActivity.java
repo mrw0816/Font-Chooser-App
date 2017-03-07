@@ -1,5 +1,6 @@
 package com.vogella.android.fontchooser;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
@@ -17,12 +18,16 @@ import android.widget.SeekBar;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
+
+    int font = 0;
+
     SeekBar fontSeekBar;
     Spinner typeFaceSpinner;
     Spinner styleSpinner;
     EditText input;
     TextView output;
 
+    String msg = "";
 
     SeekBar redSeekBar;
     SeekBar greenSeekBar;
@@ -32,6 +37,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     int greenNumber = 0;
     int blueNumber = 0;
 
+    Intent intent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +46,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         input = (EditText) findViewById(R.id.editText2);
         output = (TextView) findViewById(R.id.textView2);
+
+        //Check if app was called from another or started alone
+        if( getCallingActivity() != null){
+            intent = getIntent();
+       }
 
         typeFaceSpinner = (Spinner) findViewById(R.id.spinner);
         ArrayAdapter adapter = ArrayAdapter.createFromResource(this, R.array.typeface_choices, android.R.layout.simple_spinner_item);
@@ -59,6 +71,19 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onClick(View view) {
         String message = input.getText().toString();
         output.setText(message);
+        intent.putExtra("style", output.getTypeface().getStyle());
+        intent.putExtra("font", font);
+        intent.putExtra("font size", output.getTextSize());
+        intent.putExtra("color red", redNumber);
+        intent.putExtra("color blue", blueNumber);
+        intent.putExtra("color green", greenNumber);
+    }
+
+    public void sendFont(View view){
+        if(getCallingActivity() != null){
+            setResult(RESULT_OK, intent);
+            finish();
+        }
     }
 
     @Override
@@ -70,16 +95,19 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 switch (selected.getText().toString()) {
                     case "Default":
                         output.setTypeface(Typeface.DEFAULT, output.getTypeface().getStyle());
-
+                        font = 0;
                         break;
                     case "Monospace":
                         output.setTypeface(Typeface.MONOSPACE, output.getTypeface().getStyle());
+                        font = 1;
                         break;
                     case "Sans Serif":
                         output.setTypeface(Typeface.SANS_SERIF, output.getTypeface().getStyle());
+                        font = 2;
                         break;
                     case "Serif":
                         output.setTypeface(Typeface.SERIF, output.getTypeface().getStyle());
+                        font = 3;
                         break;
                 }
 
